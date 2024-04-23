@@ -1,17 +1,13 @@
 import { runtimeModule, state, runtimeMethod, Runtime, RuntimeModule } from "@proto-kit/module";
-import { State, assert } from "@proto-kit/protocol";
+import { State, StateMap, assert } from "@proto-kit/protocol";
 import { Bool, Field, Struct } from "o1js";
 
 class Agent extends Struct({
     agentId: Field,
+    lastMessageNumber: Field,
     securityCode: Field
 }) {
-    static createAgent(agentId: Field, securityCode: Field): Agent {
-        return new Agent({
-            agentId: Field(agentId),
-            securityCode: Field(securityCode)
-        });
-    }
+    
 }
 
 class MessageDetail extends Struct({
@@ -30,5 +26,18 @@ class Message extends Struct({
 
 @runtimeModule()
 export class Messages extends RuntimeModule<unknown>{
-    @state() public messageNumber = State.from()
+    @state() private existingAgents = StateMap.from(Field, Agent);
+
+    @runtimeMethod()
+    public processMessage(message: Message): any {
+
+        // Ensure The AgentID exists in the system
+        const agent = message.messageDetails.agent;
+        assert(this.existingAgents.get(agent.agentId).isSome);
+
+        // The security code matches that held for that AgentID
+        const messageSecurityCode = agent.securityCode;
+        assert(this.existingAgents.get(agent.agentId).value.securityCode.equals(messageSecurityCode));
+        
+    }
 }
