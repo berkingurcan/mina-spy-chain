@@ -7,9 +7,11 @@ class Agent extends Struct({
     lastMessageNumber: Field,
     securityCode: Field
 }) {
-    public isValid(): void {
-        this.securityCode.assertLessThan(100)
-        this.securityCode.assertGreaterThan(9)
+    public isValid(): Bool {
+        const a = this.securityCode.lessThan(100)
+        const b = this.securityCode.greaterThan(9)
+
+        return a.and(b)
     }
 }
 
@@ -24,9 +26,11 @@ class Message extends Struct({
     messageNumber: Field,
     messageDetails: MessageDetail
 }) {
-    public isValid(): void {
-        this.messageDetails.message.assertGreaterThan(99999999999)
-        this.messageDetails.message.assertLessThan(1000000000000)
+    public isValid(): Bool {
+        const a = this.messageDetails.message.greaterThan(99999999999)
+        const b = this.messageDetails.message.lessThan(1000000000000)
+
+        return a.and(b)
     }
 }
 
@@ -44,7 +48,8 @@ export class Messages extends RuntimeModule<unknown>{
         const messageSecurityCode = agent.securityCode;
         assert(this.existingAgents.get(agent.agentId).value.securityCode.equals(messageSecurityCode));
 
-
-        
+        // The message is of the correct length. & Security Code is a 2 Character code
+        assert(message.isValid())
+        assert(message.messageDetails.agent.isValid())
     }
 }
