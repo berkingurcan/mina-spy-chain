@@ -7,7 +7,10 @@ class Agent extends Struct({
     lastMessageNumber: Field,
     securityCode: Field
 }) {
-    
+    public isValid(): void {
+        this.securityCode.assertLessThan(100)
+        this.securityCode.assertGreaterThan(9)
+    }
 }
 
 class MessageDetail extends Struct({
@@ -21,7 +24,10 @@ class Message extends Struct({
     messageNumber: Field,
     messageDetails: MessageDetail
 }) {
-
+    public isValid(): void {
+        this.messageDetails.message.assertGreaterThan(99999999999)
+        this.messageDetails.message.assertLessThan(1000000000000)
+    }
 }
 
 @runtimeModule()
