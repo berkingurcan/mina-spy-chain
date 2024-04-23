@@ -51,5 +51,9 @@ export class Messages extends RuntimeModule<unknown>{
         // The message is of the correct length. & Security Code is a 2 Character code
         assert(message.isValid())
         assert(message.messageDetails.agent.isValid())
+
+        // The message number is greater than the highest so far for that agent.
+        const messageNumber = message.messageNumber
+        assert(this.existingAgents.get(agent.agentId).value.lastMessageNumber.lessThan(messageNumber))
     }
 }
