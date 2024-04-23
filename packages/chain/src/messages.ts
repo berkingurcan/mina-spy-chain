@@ -49,11 +49,14 @@ export class Messages extends RuntimeModule<unknown>{
         assert(this.existingAgents.get(agent.agentId).value.securityCode.equals(messageSecurityCode));
 
         // The message is of the correct length. & Security Code is a 2 Character code
-        assert(message.isValid())
-        assert(message.messageDetails.agent.isValid())
+        assert(message.isValid());
+        assert(message.messageDetails.agent.isValid());
 
         // The message number is greater than the highest so far for that agent.
-        const messageNumber = message.messageNumber
-        assert(this.existingAgents.get(agent.agentId).value.lastMessageNumber.lessThan(messageNumber))
+        const messageNumber = message.messageNumber;
+        assert(this.existingAgents.get(agent.agentId).value.lastMessageNumber.lessThan(messageNumber));
+
+        // You should update the agent state to store the last message number received
+        this.existingAgents.get(agent.agentId).value.lastMessageNumber = messageNumber;
     }
 }
