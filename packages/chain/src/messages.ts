@@ -30,7 +30,6 @@ export class Messages extends RuntimeModule<unknown>{
 
     @runtimeMethod()
     public processMessage(message: Message): any {
-
         // Ensure The AgentID exists in the system
         const agent = message.messageDetails.agent;
         assert(this.existingAgents.get(agent.agentId).isSome);
@@ -38,6 +37,8 @@ export class Messages extends RuntimeModule<unknown>{
         // The security code matches that held for that AgentID
         const messageSecurityCode = agent.securityCode;
         assert(this.existingAgents.get(agent.agentId).value.securityCode.equals(messageSecurityCode));
+
+
         
     }
 }
