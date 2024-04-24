@@ -39,6 +39,11 @@ export class Messages extends RuntimeModule<unknown>{
     @state() private existingAgents = StateMap.from(Field, Agent);
 
     @runtimeMethod()
+    public initializeAgent(id: Field, agent: Agent) {
+        
+    }
+
+    @runtimeMethod()
     public processMessage(message: Message): any {
         // Ensure The AgentID exists in the system
         const agent = message.messageDetails.agent;
