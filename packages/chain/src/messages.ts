@@ -40,7 +40,7 @@ export class Messages extends RuntimeModule<unknown>{
 
     @runtimeMethod()
     public initializeAgent(id: Field, agent: Agent) {
-        
+        this.existingAgents.set(id, agent);
     }
 
     @runtimeMethod()
