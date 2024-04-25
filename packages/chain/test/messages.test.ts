@@ -6,7 +6,6 @@ import { log } from "@proto-kit/common";
 log.setLevel("ERROR");
 
 
-
 describe("Mina Spy Chain Messages", () => {
     const appChain = TestingAppChain.fromRuntime({
         Messages,
@@ -56,6 +55,8 @@ describe("Mina Spy Chain Messages", () => {
         const block = await appChain.produceBlock();
 
         const agent = await appChain.query.runtime.Messages.existingAgents.get(agents[0].agentId)
-        expect(agent).toBe(agents[0])
+        expect(agent?.agentId).toEqual(agents[0].agentId);
+        expect(agent?.lastMessageNumber).toEqual(agents[0].lastMessageNumber);
+        expect(agent?.securityCode).toEqual(agents[0].securityCode);
     })
 })
