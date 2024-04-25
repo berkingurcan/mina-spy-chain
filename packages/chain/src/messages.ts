@@ -36,7 +36,7 @@ export class Message extends Struct({
 
 @runtimeModule()
 export class Messages extends RuntimeModule<unknown>{
-    @state() private existingAgents = StateMap.from(Field, Agent);
+    @state() public existingAgents = StateMap.from(Field, Agent);
 
     @runtimeMethod()
     public initializeAgent(id: Field, agent: Agent) {
