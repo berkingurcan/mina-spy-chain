@@ -2,7 +2,7 @@ import { runtimeModule, state, runtimeMethod, Runtime, RuntimeModule } from "@pr
 import { State, StateMap, assert } from "@proto-kit/protocol";
 import { Bool, Field, Struct } from "o1js";
 
-class Agent extends Struct({
+export class Agent extends Struct({
     agentId: Field,
     lastMessageNumber: Field,
     securityCode: Field
@@ -15,14 +15,14 @@ class Agent extends Struct({
     }
 }
 
-class MessageDetail extends Struct({
+export class MessageDetail extends Struct({
     agent: Agent,
     message: Field,
 }) {
     
 }
 
-class Message extends Struct({
+export class Message extends Struct({
     messageNumber: Field,
     messageDetails: MessageDetail
 }) {
