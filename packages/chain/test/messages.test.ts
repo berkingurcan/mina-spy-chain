@@ -76,9 +76,47 @@ describe("Mina Spy Chain Messages", () => {
         await tx2.sign();
         await tx2.send();
         await appChain.produceBlock();
-    
+
         const updatedAgent = await appChain.query.runtime.Messages.existingAgents.get(agents[0].agentId);
         expect(updatedAgent?.lastMessageNumber).toEqual(Field(1));
     });
+
+    let wrongSecurityAgent: any;
+    it("Initialize agent with wrong security code", async () => {
+        wrongSecurityAgent = new Agent({
+            agentId: agents[1].agentId,
+            lastMessageNumber: Field(0),
+            securityCode: Field(999) // incorrect security code
+        });
+
+        const tx3 = await appChain.transaction(carrieMathison, () => {
+            messages.initializeAgent(agents[1].agentId, wrongSecurityAgent)
+        })
+
+        await tx3.sign();
+        await tx3.send();
+
+        await appChain.produceBlock();
+
+        const wrongAgent = await appChain.query.runtime.Messages.existingAgents.get(agents[1].agentId)
+        expect(wrongAgent?.securityCode).not.toEqual(agents[1].securityCode)
+    })
+
+    it("Reject message with security code mismatch", async () => {
+        const invalidMessage = new Message({
+            messageNumber: Field(2),
+            messageDetails: {
+                agent: wrongSecurityAgent,
+                message: Field(100000000001)
+            }
+        });
+
+        const tx4 = await appChain.transaction(carrieMathison, () => {
+            messages.processMessage(invalidMessage);
+        });
     
+        await tx4.sign();
+        await tx4.send();
+        await appChain.produceBlock();
+    });
 })

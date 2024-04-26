@@ -51,11 +51,11 @@ export class Messages extends RuntimeModule<unknown>{
     public processMessage(message: Message): any {
         // Ensure The AgentID exists in the system
         const agent = message.messageDetails.agent;
-        assert(this.existingAgents.get(agent.agentId).isSome);
+        assert(this.existingAgents.get(agent.agentId).isSome, "AGENT IS NOT EXISTS");
 
         // The security code matches that held for that AgentID
         const messageSecurityCode = agent.securityCode;
-        assert(this.existingAgents.get(agent.agentId).value.securityCode.equals(messageSecurityCode));
+        assert(this.existingAgents.get(agent.agentId).value.securityCode.equals(messageSecurityCode), "INVALID SECURITY CODE!");
 
         // The message is of the correct length. & Security Code is a 2 Character code
         assert(message.isValid());
@@ -71,7 +71,7 @@ export class Messages extends RuntimeModule<unknown>{
             lastMessageNumber: messageNumber,
             securityCode: messageSecurityCode
         })
-        
+
         this.existingAgents.set(agent.agentId, updatedAgent)
     }
 }
