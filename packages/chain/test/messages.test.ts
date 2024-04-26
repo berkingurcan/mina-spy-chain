@@ -52,8 +52,9 @@ describe("Mina Spy Chain Messages", () => {
         await tx1.sign();
         await tx1.send();
 
-        await appChain.produceBlock();
-
+        const block = await appChain.produceBlock();
+        expect(block?.transactions[0].status.toBoolean()).toBe(true);
+        
         const agent = await appChain.query.runtime.Messages.existingAgents.get(agents[0].agentId)
         expect(agent?.agentId).toEqual(agents[0].agentId);
         expect(agent?.lastMessageNumber).toEqual(agents[0].lastMessageNumber);
@@ -75,7 +76,8 @@ describe("Mina Spy Chain Messages", () => {
     
         await tx2.sign();
         await tx2.send();
-        await appChain.produceBlock();
+        const block = await appChain.produceBlock();
+        expect(block?.transactions[0].status.toBoolean()).toBe(true);
 
         const updatedAgent = await appChain.query.runtime.Messages.existingAgents.get(agents[0].agentId);
         expect(updatedAgent?.lastMessageNumber).toEqual(Field(1));
@@ -96,7 +98,8 @@ describe("Mina Spy Chain Messages", () => {
         await tx3.sign();
         await tx3.send();
 
-        await appChain.produceBlock();
+        const block = await appChain.produceBlock();
+        expect(block?.transactions[0].status.toBoolean()).toBe(true);
 
         const wrongAgent = await appChain.query.runtime.Messages.existingAgents.get(agents[1].agentId)
         expect(wrongAgent?.securityCode).not.toEqual(agents[1].securityCode)
@@ -117,6 +120,7 @@ describe("Mina Spy Chain Messages", () => {
     
         await tx4.sign();
         await tx4.send();
-        await appChain.produceBlock();
+        const block = await appChain.produceBlock();
+        expect(block?.transactions[0].status.toBoolean()).toBe(false);
     });
 })
