@@ -143,5 +143,49 @@ describe("Mina Spy Chain Messages", () => {
 
         expect(block?.transactions[0].status.toBoolean()).toBe(false);
     });
+
+    it("Reject message with invalid sequence number", async () => {
+        const lowerNumberMessage = new Message({
+            messageNumber: Field(0), // Lower than last valid
+            messageDetails: {
+                agent: agents[0],
+                message: Field(120000000001)
+            }
+        });
+    
+        const tx6 = await appChain.transaction(carrieMathison, () => {
+            messages.processMessage(lowerNumberMessage);
+        });
+
+        await tx6.sign();
+        await tx6.send();
+        const block = await appChain.produceBlock();
+
+        expect(block?.transactions[0].status.toBoolean()).toBe(false);
+    });
+
+    it("Reject message from non-existent agent", async () => {
+        const nonExistentAgentMessage = new Message({
+            messageNumber: Field(1),
+            messageDetails: {
+                agent: new Agent({
+                    agentId: Field(999), // Non-existent agent ID
+                    lastMessageNumber: Field(0),
+                    securityCode: Field(10)
+                }),
+                message: Field(100000000001)
+            }
+        });
+    
+        const tx7 = await appChain.transaction(carrieMathison, () => {
+            messages.processMessage(nonExistentAgentMessage);
+        });
+
+        await tx7.sign();
+        await tx7.send();
+        const block = await appChain.produceBlock();
+
+        expect(block?.transactions[0].status.toBoolean()).toBe(false);
+    });
     
 })
