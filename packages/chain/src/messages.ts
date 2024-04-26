@@ -13,6 +13,10 @@ export class Agent extends Struct({
 
         return a.and(b)
     }
+
+    public updateMessageNumber(n: Field): void {
+        this.lastMessageNumber = n;
+    }
 }
 
 export class MessageDetail extends Struct({
@@ -62,6 +66,12 @@ export class Messages extends RuntimeModule<unknown>{
         assert(this.existingAgents.get(agent.agentId).value.lastMessageNumber.lessThan(messageNumber));
 
         // You should update the agent state to store the last message number received
-        this.existingAgents.get(agent.agentId).value.lastMessageNumber = messageNumber;
+        const updatedAgent = new Agent({
+            agentId: agent.agentId,
+            lastMessageNumber: messageNumber,
+            securityCode: messageSecurityCode
+        })
+        
+        this.existingAgents.set(agent.agentId, updatedAgent)
     }
 }
