@@ -54,7 +54,7 @@ describe("Mina Spy Chain Messages", () => {
 
         const block = await appChain.produceBlock();
         expect(block?.transactions[0].status.toBoolean()).toBe(true);
-        
+
         const agent = await appChain.query.runtime.Messages.existingAgents.get(agents[0].agentId)
         expect(agent?.agentId).toEqual(agents[0].agentId);
         expect(agent?.lastMessageNumber).toEqual(agents[0].lastMessageNumber);
@@ -88,7 +88,7 @@ describe("Mina Spy Chain Messages", () => {
         wrongSecurityAgent = new Agent({
             agentId: agents[1].agentId,
             lastMessageNumber: Field(0),
-            securityCode: Field(999) // incorrect security code
+            securityCode: Field(999)
         });
 
         const tx3 = await appChain.transaction(carrieMathison, () => {
@@ -123,4 +123,25 @@ describe("Mina Spy Chain Messages", () => {
         const block = await appChain.produceBlock();
         expect(block?.transactions[0].status.toBoolean()).toBe(false);
     });
+
+    it("Reject message with invalid length", async () => {
+        const invalidLengthMessage = new Message({
+            messageNumber: Field(3),
+            messageDetails: {
+                agent: agents[0],
+                message: Field(999)
+            }
+        });
+
+        const tx5 = await appChain.transaction(carrieMathison, () => {
+            messages.processMessage(invalidLengthMessage);
+        });
+
+        await tx5.sign();
+        await tx5.send();
+        const block = await appChain.produceBlock();
+
+        expect(block?.transactions[0].status.toBoolean()).toBe(false);
+    });
+    
 })
