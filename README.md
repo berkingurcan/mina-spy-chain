@@ -1,7 +1,11 @@
-# Protokit starter-kit
+# MINA NAVIGATORS L2E CHALLENGE 3
 
-This repository is a monorepo aimed at kickstarting application chain development using the Protokit framework.
+This repository is a solution for Mina Navigators program, learn to earn challenge 3.
 
+## Answer to the question regarding privacy
+This app chain is not private regarding messages, agents and their contents because all inputs and states are public. It is roughly solved by encrypting and decrypting by content and secret codes BUT it is not tricky and also we need verification of the messages. So, it is solved by benefiting zk programs, messages should go through verifiable computation on to ensure their privacy and only the proof of this computation should be transferred. By using this technique, all existing message constraints can be confirmed, and without disclosing any sensitive information, the system's state can be updated as necessary. Then we can change the application messages and their verification are private.
+
+ 
 ## Quick start
 
 The monorepo contains 1 package and 1 app:
@@ -21,33 +25,8 @@ The monorepo contains 1 package and 1 app:
 > `docker run -it --rm -p 3000:3000 -p 8080:8080 -v %cd%:/starter-kit -w /starter-kit gplane/pnpm:node18 bash`
 
 
-### Setup
-
-```zsh
-git clone https://github.com/proto-kit/starter-kit my-chain
-cd my-chain
-
-# ensures you have the right node.js version
-nvm use
-pnpm install
-```
-
-### Running the sequencer & UI
-
-```zsh
-# starts both UI and sequencer locally
-pnpm dev
-
-# starts UI only
-pnpm dev -- --filter web
-# starts sequencer only
-pnpm dev -- --filter chain
-```
-
 ### Running tests
 ```zsh
 # run and watch tests for the `chain` package
-pnpm run test --filter=chain -- --watchAll
+pnpm run test
 ```
-
-Navigate to `localhost:3000` to see the example UI, or to `localhost:8080/graphql` to see the GQL interface of the locally running sequencer.
