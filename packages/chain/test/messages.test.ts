@@ -1,5 +1,5 @@
 import { TestingAppChain } from "@proto-kit/sdk";
-import { Field, PrivateKey, UInt64 } from "o1js";
+import { Field, PrivateKey, UInt64, CircuitString } from "o1js";
 import { Messages, Agent, Message, MessageDetail } from "../src/messages";
 import { log } from "@proto-kit/common";
 
@@ -23,6 +23,11 @@ describe("Mina Spy Chain Messages", () => {
     let messages: any;
     let agents: Agent[];
 
+    function generateMessage(input: string) {
+        const message = input
+        return message
+    }
+
     beforeAll(async () => {
         await appChain.start();
 
@@ -34,7 +39,7 @@ describe("Mina Spy Chain Messages", () => {
         messages = appChain.runtime.resolve("Messages");
     
         agents = []
-    
+
         for (let i = 1; i <= 5; i++) {
             agents.push(new Agent({
                 agentId: Field(i),
@@ -66,7 +71,7 @@ describe("Mina Spy Chain Messages", () => {
             messageNumber: Field(1),
             messageDetails: new MessageDetail({
                 agent: agents[0],
-                message: Field(100000000001)
+                message: generateMessage("SECRETMeSSGE")
             })
         });
     
@@ -110,7 +115,7 @@ describe("Mina Spy Chain Messages", () => {
             messageNumber: Field(2),
             messageDetails: {
                 agent: wrongSecurityAgent,
-                message: Field(100000000001)
+                message: generateMessage("ZAAAAAAAAAAA")
             }
         });
 
@@ -129,7 +134,7 @@ describe("Mina Spy Chain Messages", () => {
             messageNumber: Field(3),
             messageDetails: {
                 agent: agents[0],
-                message: Field(999)
+                message: generateMessage("AAA")
             }
         });
 
@@ -149,7 +154,7 @@ describe("Mina Spy Chain Messages", () => {
             messageNumber: Field(0), // Lower than last valid
             messageDetails: {
                 agent: agents[0],
-                message: Field(120000000001)
+                message: generateMessage("CCCCCCCCCCCC")
             }
         });
     
@@ -173,7 +178,7 @@ describe("Mina Spy Chain Messages", () => {
                     lastMessageNumber: Field(0),
                     securityCode: Field(10)
                 }),
-                message: Field(100000000001)
+                message: generateMessage("AAAAAAAAAAAA")
             }
         });
     
