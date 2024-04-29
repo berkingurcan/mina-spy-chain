@@ -1,6 +1,6 @@
 import { runtimeModule, state, runtimeMethod, Runtime, RuntimeModule } from "@proto-kit/module";
 import { State, StateMap, assert } from "@proto-kit/protocol";
-import { Bool, Field, Struct } from "o1js";
+import { Bool, Field, Struct, CircuitString } from "o1js";
 
 export class Agent extends Struct({
     agentId: Field,
@@ -21,7 +21,7 @@ export class Agent extends Struct({
 
 export class MessageDetail extends Struct({
     agent: Agent,
-    message: Field,
+    message: String,
 }) {
     
 }
@@ -31,10 +31,11 @@ export class Message extends Struct({
     messageDetails: MessageDetail
 }) {
     public isValid(): Bool {
-        const a = this.messageDetails.message.greaterThan(99999999999)
-        const b = this.messageDetails.message.lessThan(1000000000000)
+        const desiredLength = new Field(12);
+        const message = this.messageDetails.message;
+        const len = new Field(message.length)
 
-        return a.and(b)
+        return len.equals(desiredLength);
     }
 }
 
